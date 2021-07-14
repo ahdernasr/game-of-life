@@ -1,36 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import gridConfig from "./gridconfig";
 const _ = require("lodash");
 
 const Grid = () => {
-  const slider: any = document.querySelector(".grid");
-  let isDown = false;
-  let startX: any;
-  let scrollLeft: any;
-
-  slider.addEventListener("mousedown", (e: any) => {
-    isDown = true;
-    slider.classList.add("active");
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
-  });
-  slider.addEventListener("mouseleave", () => {
-    isDown = false;
-    slider.classList.remove("active");
-  });
-  slider.addEventListener("mouseup", () => {
-    isDown = false;
-    slider.classList.remove("active");
-  });
-  slider.addEventListener("mousemove", (e: any) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 3; //scroll-fast
-    slider.scrollLeft = scrollLeft - walk;
-    console.log(walk);
-  });
-
+  const [generation, setGeneration] = useState(0);
   const grid = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   // 2D Array that will be defined later which allows easy access to nodes
@@ -75,13 +48,15 @@ const Grid = () => {
   }
 
   function nextGeneration() {
+    setGeneration(generation + 1);
     allNeighborsArray = [];
 
     const enhabitedArray: any[] = Array.from(
       document.querySelectorAll(".enhabited")
     );
     console.time("entire function");
-
+// what the problem is:
+// two for loops, first one is removing some neighbors which are required for the second loops, hence incorrect functionality
     for (let i = 0; i < enhabitedArray.length; i++) {
       // get a list of the neighbors of the enhabited node
       let neighborsList;
@@ -109,6 +84,7 @@ const Grid = () => {
         enhabitedNeighborsList.length === 3 &&
         !n.classList.contains("enhabited")
       ) {
+          console.log(enhabitedNeighborsList, enhabitedNeighborsList.length);
         n.classList.add("enhabited");
       }
     }
@@ -117,6 +93,41 @@ const Grid = () => {
   }
 
   useEffect(() => {
+    const slider: any = document.getElementById("grid");
+    let isDown = false;
+    let startX: any;
+    let startY: any;
+    let scrollTop: any;
+    let scrollLeft: any;
+
+    slider.addEventListener("mousedown", (e: any) => {
+      slider.style.cursor = "grab";
+      isDown = true;
+      slider.classList.add("active");
+      startY = e.pageY - slider.offsetTop;
+      startX = e.pageX - slider.offsetLeft;
+      scrollTop = slider.scrollTop;
+      scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener("mouseleave", () => {
+      isDown = false;
+      slider.classList.remove("active");
+    });
+    slider.addEventListener("mouseup", () => {
+      isDown = false;
+      slider.classList.remove("active");
+    });
+    slider.addEventListener("mousemove", (e: any) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const y = e.pageY - slider.offsetTop;
+      const walk = (x - startX) * 2; //scroll-fast
+      const walkY = (y - startY) * 2;
+      slider.scrollLeft = scrollLeft - walk;
+      slider.scrollTop = scrollTop - walkY;
+    });
+
     function generateGrid(gridConfig: configCriteria) {
       const gridContainer = grid.current;
 
@@ -161,11 +172,12 @@ const Grid = () => {
 
   return (
     <>
-      <div className="grid" ref={grid}></div>
+      <div id="grid" className="grid" ref={grid}></div>
       <button onClick={nextGeneration}>Next Generation</button>
       <button onClick={cycleGenerations}>
         <i className="fas fa-play"></i>
       </button>
+      <p>{generation}</p>
     </>
   );
 };

@@ -12,8 +12,8 @@
 
 .grid {
   display: flex;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
   max-height: 80%;
   max-width: 80%;
 }

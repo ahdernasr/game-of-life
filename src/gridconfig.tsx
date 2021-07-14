@@ -1,5 +1,5 @@
 const gridConfig = {
-    width: 400,
+    width: 500,
     height: 200
 }
 

@@ -1,6 +1,6 @@
 const gridConfig = {
-    width: 200,
-    height: 100
+    width: 400,
+    height: 200
 }
 
 export default gridConfig;

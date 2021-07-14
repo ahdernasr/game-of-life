@@ -21,7 +21,10 @@
 .grid-node {
   width: 10px;
   height: 10px;
-  padding: 0.25rem;
+  padding: 0.05rem;
   border: .1px solid gray;
 }
 
+.enhabited {
+  background-color:aquamarine;
+}

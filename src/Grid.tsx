@@ -1,9 +1,15 @@
 import React, { useRef, useEffect } from "react";
 import gridConfig from "./gridconfig";
+import dragFunction from "./dragFunction";
 const _ = require("lodash");
 
 const Grid = () => {
   const grid = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+  // Localises dragFunction so it can be used in useEffect, otherwise throws error
+  function enableDrag(): any {
+    dragFunction(document.getElementById('grid'));
+  }
 
   // 2D Array that will be defined later which allows easy access to nodes
   var nodesArray: any[] = [];
@@ -15,10 +21,13 @@ const Grid = () => {
     height: number;
   }
 
-  function enhabitNode(node: any) {
+  // Marks selected not as enhabited
+  function enhabitNode(node: HTMLElement) {
     node.classList.add("enhabited");
   }
 
+  // Uses the created 2D Array of all the nodes to create a list of neighbors +
+  // Uses x and y coordinates with top left as (0,0)
   function findNeighbors(node: any) {
     let neighborsList: any[] = [];
 
@@ -39,13 +48,15 @@ const Grid = () => {
     return neighborsList;
   }
 
+  // Auto plays generations
   function cycleGenerations() {
     setInterval(() => {
-      nextGeneration(nodesArray);
-    }, 200);
+      nextGeneration();
+    }, gridConfig.cycleSpeed);
   }
 
-  function nextGeneration(nodesArray: any[]) {
+  // 
+  function nextGeneration() {
     allNeighborsArray = [];
 
     const enhabitedArray: any[] = Array.from(
@@ -79,14 +90,6 @@ const Grid = () => {
         return neighbor && neighbor.classList.contains("enhabited");
       });
 
-      // **-
-      // ***
-      // ---
-
-      // *-**
-      // *-**
-      // ****
-
       if (
         enhabitedNeighborsList.length === 3 &&
         !n.classList.contains("enhabited")
@@ -105,40 +108,8 @@ const Grid = () => {
   }
 
   useEffect(() => {
-    const slider: any = document.getElementById("grid");
-    let isDown = false;
-    let startX: any;
-    let startY: any;
-    let scrollTop: any;
-    let scrollLeft: any;
-
-    slider.addEventListener("mousedown", (e: any) => {
-      slider.style.cursor = "grab";
-      isDown = true;
-      slider.classList.add("active");
-      startY = e.pageY - slider.offsetTop;
-      startX = e.pageX - slider.offsetLeft;
-      scrollTop = slider.scrollTop;
-      scrollLeft = slider.scrollLeft;
-    });
-    slider.addEventListener("mouseleave", () => {
-      isDown = false;
-      slider.classList.remove("active");
-    });
-    slider.addEventListener("mouseup", () => {
-      isDown = false;
-      slider.classList.remove("active");
-    });
-    slider.addEventListener("mousemove", (e: any) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - slider.offsetLeft;
-      const y = e.pageY - slider.offsetTop;
-      const walk = (x - startX) * 2; //scroll-fast
-      const walkY = (y - startY) * 2;
-      slider.scrollLeft = scrollLeft - walk;
-      slider.scrollTop = scrollTop - walkY;
-    });
+    
+    enableDrag();
 
     function generateGrid(gridConfig: configCriteria) {
       const gridContainer = grid.current;
@@ -189,7 +160,7 @@ const Grid = () => {
       <div id="grid" className="grid" ref={grid}></div>
       <button
         onClick={() => {
-          nextGeneration(nodesArray);
+          nextGeneration();
         }}
       >
         Next Generation

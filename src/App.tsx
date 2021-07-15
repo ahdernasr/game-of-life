@@ -1,9 +1,9 @@
-import Simulation from "./Simulation";
+import Grid from "./Grid";
 
 function App() {
   return (
     <div className="App">
-      <Simulation></Simulation>
+      <Grid></Grid>
     </div>
   );
 }

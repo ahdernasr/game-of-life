@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import gridConfig from "./gridconfig";
 import dragFunction from "./dragFunction";
+import Sidebar from "./Sidebar";
 const _ = require("lodash");
 
 const Grid = () => {
@@ -158,17 +159,7 @@ const Grid = () => {
   return (
     <>
       <div id="grid" className="grid" ref={grid}></div>
-      <button
-        onClick={() => {
-          nextGeneration();
-        }}
-      >
-        Next Generation
-      </button>
-      <button onClick={cycleGenerations}>
-        <i className="fas fa-play"></i>
-      </button>
-      <p>{5}</p>
+      <Sidebar nextGeneration={nextGeneration} cycleGenerations={cycleGenerations}></Sidebar>
     </>
   );
 };

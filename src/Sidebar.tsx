@@ -1,6 +1,5 @@
-import React from "react";
-
 const Sidebar = (props: any) => {
+  var cycleInterval: any;
   return (
     <div className="sidebar">
       <button
@@ -10,15 +9,25 @@ const Sidebar = (props: any) => {
       >
         Next Generation
       </button>
-      <div>
-        <button onClick={() => props.cycleGenerations()}>
+      <div className="pause-play">
+        <button
+          onClick={() => {
+            cycleInterval = setInterval(
+              props.nextGeneration,
+              props.config.cycleSpeed
+            );
+          }}
+        >
           <i className="fas fa-play"></i>
         </button>
-        <button onClick={() => props.pauseGenerations()}>
+        <button
+          onClick={() => {
+            clearInterval(cycleInterval);
+          }}
+        >
           <i className="fas fa-pause"></i>
         </button>
       </div>
-      <p>{5}</p>
     </div>
   );
 };

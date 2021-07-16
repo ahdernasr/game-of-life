@@ -28,3 +28,28 @@
 .enhabited {
   background-color:aquamarine;
 }
+
+.sidebar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 15%;
+  height: 80vh;
+}
+
+.speed-selector {
+  width: 20%;
+  margin: 0.5rem;
+}
+
+.sidebar div, .sidebar button {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pause-play button {
+  margin: 0.5rem;
+}

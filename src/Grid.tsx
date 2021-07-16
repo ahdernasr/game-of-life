@@ -2,14 +2,14 @@ import React, { useRef, useEffect } from "react";
 import gridConfig from "./gridconfig";
 import dragFunction from "./dragFunction";
 import Sidebar from "./Sidebar";
-const _ = require("lodash");
+import _ from "lodash";
 
 const Grid = () => {
   const grid = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   // Localises dragFunction so it can be used in useEffect, otherwise throws error
   function enableDrag(): any {
-    dragFunction(document.getElementById('grid'));
+    dragFunction(document.getElementById("grid"));
   }
 
   // 2D Array that will be defined later which allows easy access to nodes
@@ -49,14 +49,7 @@ const Grid = () => {
     return neighborsList;
   }
 
-  // Auto plays generations
-  function cycleGenerations() {
-    setInterval(() => {
-      nextGeneration();
-    }, gridConfig.cycleSpeed);
-  }
-
-  // 
+  //
   function nextGeneration() {
     allNeighborsArray = [];
 
@@ -66,6 +59,7 @@ const Grid = () => {
 
     let toRemove: HTMLElement[] = [];
     let toAdd: HTMLElement[] = [];
+    
     // what the problem is:
     // two for loops, first one is removing some neighbors which are required for the second loops, hence incorrect functionality
     for (let i = 0; i < enhabitedArray.length; i++) {
@@ -109,9 +103,6 @@ const Grid = () => {
   }
 
   useEffect(() => {
-    
-    enableDrag();
-
     function generateGrid(gridConfig: configCriteria) {
       const gridContainer = grid.current;
 
@@ -127,6 +118,7 @@ const Grid = () => {
             x: number;
             y: number;
           }
+
           let nodeProperties: propertyCriteria = {
             x: x,
             y: y,
@@ -146,12 +138,14 @@ const Grid = () => {
         }
         nodesArray.push(rowArray);
       }
+
+      enableDrag();
+
+      // bring the middle element into view;
+      nodesArray[gridConfig.height / 2][gridConfig.width / 2].scrollIntoView();
     }
 
     generateGrid(gridConfig);
-
-    // bring the middle element into view;
-    nodesArray[gridConfig.width / 2][gridConfig.height / 2].scrollIntoView();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -159,7 +153,7 @@ const Grid = () => {
   return (
     <>
       <div id="grid" className="grid" ref={grid}></div>
-      <Sidebar nextGeneration={nextGeneration} cycleGenerations={cycleGenerations}></Sidebar>
+      <Sidebar nextGeneration={nextGeneration} config={gridConfig}></Sidebar>
     </>
   );
 };
